@@ -1,3 +1,4 @@
+var death,jump,checkpoint;
 var PLAY = 1;
 var END = 0;
 var gameState = PLAY;
@@ -31,6 +32,10 @@ function preload(){
   
   gameOverImg = loadImage("gameOver.png");
   restartImg = loadImage("restart.png");
+  
+  death=loadSound("die.mp3");
+  jump=loadSound("jump.mp3");
+  checkpoint=loadSound("checkPoint.mp3");
 }
 
 function setup() {
@@ -76,9 +81,13 @@ function draw() {
   if (gameState===PLAY){
     score = score + Math.round(getFrameRate()/60);
     ground.velocityX = -(6 + 3*score/100);
+    if(score %100===0&&score>0){
+     checkpoint.play(); 
+    }
   
     if(keyDown("space") && trex.y >= 159) {
       trex.velocityY = -12;
+      jump.play();
     }
   
     trex.velocityY = trex.velocityY + 0.8
@@ -93,6 +102,7 @@ function draw() {
   
     if(obstaclesGroup.isTouching(trex)){
         gameState = END;
+      death.play();
     }
   }
   else if (gameState === END) {
